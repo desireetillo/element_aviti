@@ -1,0 +1,11 @@
+.*DS_Store
+*err
+*out
+bin/
+envs/
+conda/
+test_data/
+data/
+*~
+tmp/
+setup/Miniforge3-Linux-x86_64.sh
