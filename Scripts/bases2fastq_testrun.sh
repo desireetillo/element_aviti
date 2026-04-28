@@ -8,16 +8,18 @@
 #SBATCH --gres=lscratch:800
 #SBATCH --partition=norm
 
-# resource recommendations from https://docs.elembio.io/docs/bases2fastq/setup/
+IN=$1
+OUT=$2
+shift 2
+EXTRA_ARGS="$@"
 
 echo "Loading environment" 
 
 # load environment, and multiqc
-source /data/Seq37H/Element/start_conda.sh
-module load multiqc/1.28
+source /data/Seq37H/Element/Scripts/start_conda.sh
+module load multiqc/1.34
 
-# set up local scrath and tmpdir for bases2fastq
-
+# set up local scratch and tmpdir for bases2fastq
 if [ -n "${SLURM_TMPDIR-}" ]; then
     LOCAL_SCRATCH="$SLURM_TMPDIR"
 else
@@ -32,15 +34,19 @@ export TMPDIR="$LOCAL_SCRATCH"
 echo "Using LOCAL_SCRATCH: $LOCAL_SCRATCH"
 echo "TMPDIR set to: $TMPDIR"
 
+echo "*************************************"
+echo "Starting to process the directory $IN"
+echo "*************************************"
 
-echo "*************************************"
-echo "Starting to process the directory $1"
-echo "*************************************"
-if [ -d $1/OUTPUT ]; then
-   echo "OUTPUT directory exists."
+if [ -d "$IN/$OUT" ]; then
+   echo "$OUT directory exists."
 else
-   echo "Making OUTPUT directory"
-   mkdir $1/OUTPUT
+   echo "Making $OUT directory"
+   mkdir -p "$IN/$OUT"
 fi
 
-./bin/bases2fastq $1 $1/OUTPUT -p $SLURM_CPUS_PER_TASK 
+./bin/bases2fastq "$IN" "$IN/$OUT" \
+    -p "$SLURM_CPUS_PER_TASK" \
+    --no-projects \
+    --group-fastq \
+    $EXTRA_ARGS
