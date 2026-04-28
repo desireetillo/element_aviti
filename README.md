@@ -22,6 +22,8 @@ need:
 
 See:  bases2fastq.sh 
 
+- need multiqc/v1.34 for bases2fastq module to be available 
+
 ## Things to figure out
 
 - Read [options/parameters](https://docs.elembio.io/docs/bases2fastq/optional-arguments/) to use for standard runs
